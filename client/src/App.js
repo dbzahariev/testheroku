@@ -1,75 +1,69 @@
-import React from 'react';
-import axios from 'axios';
+import React from "react";
+import axios from "axios";
 
-
-import './App.css';
+import "./App.css";
 
 class App extends React.Component {
-
   state = {
-    title: '',
-    body: '',
-    posts: []
+    title: "",
+    body: "",
+    posts: [],
   };
 
   componentDidMount = () => {
     this.getBlogPost();
   };
 
-
   getBlogPost = () => {
-    axios.get('/api')
+    axios
+      .get("/api")
       .then((response) => {
         const data = response.data;
         this.setState({ posts: data });
-        console.log('Data has been received!!');
+        console.log("Data has been received!!");
       })
       .catch(() => {
-        alert('Error retrieving data!!!');
+        alert("Error retrieving data!!!");
       });
-  }
+  };
 
   handleChange = ({ target }) => {
     const { name, value } = target;
     this.setState({ [name]: value });
   };
 
-
   submit = (event) => {
     event.preventDefault();
 
     const payload = {
       title: this.state.title,
-      body: this.state.body
+      body: this.state.body,
     };
 
-
     axios({
-      url: '/api/save',
-      method: 'POST',
-      data: payload
+      url: "/api/save",
+      method: "POST",
+      data: payload,
     })
       .then(() => {
-        console.log('Data has been sent to the server');
+        console.log("Data has been sent to the server");
         this.resetUserInputs();
         this.getBlogPost();
       })
       .catch(() => {
-        console.log('Internal server error');
-      });;
+        console.log("Internal server error");
+      });
   };
 
   resetUserInputs = () => {
     this.setState({
-      title: '',
-      body: ''
+      title: "",
+      body: "",
     });
   };
 
   displayBlogPost = (posts) => {
-
     if (!posts.length) return null;
-
 
     return posts.map((post, index) => (
       <div key={index} className="blog-post__display">
@@ -80,16 +74,13 @@ class App extends React.Component {
   };
 
   render() {
-
-    console.log('State: ', this.state);
-
     //JSX
-    return(
+    return (
       <div className="app">
         <h2>Welcome to the best app ever</h2>
         <form onSubmit={this.submit}>
           <div className="form-input">
-            <input 
+            <input
               type="text"
               name="title"
               placeholder="Title"
@@ -105,21 +96,16 @@ class App extends React.Component {
               rows="10"
               value={this.state.body}
               onChange={this.handleChange}
-            >
-              
-            </textarea>
+            ></textarea>
           </div>
 
           <button>Submit</button>
         </form>
 
-        <div className="blog-">
-          {this.displayBlogPost(this.state.posts)}
-        </div>
+        <div className="blog-">{this.displayBlogPost(this.state.posts)}</div>
       </div>
     );
   }
 }
-
 
 export default App;
